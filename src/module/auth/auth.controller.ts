@@ -8,6 +8,7 @@ const register = async (req: Request, res: Response) => {
         const data = req.body
         const result = await authService.registerInToDB(data)
         const tokenData = {
+            _id: result._id,
             email: data.email,
             role: data.role
         }
