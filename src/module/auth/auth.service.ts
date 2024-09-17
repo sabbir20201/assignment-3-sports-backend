@@ -12,9 +12,6 @@ const registerInToDB = async (payload: TUser) => {
         throw new Error("user already exists");
 
     }
-    // set user role 
-    // payload.role = USER_ROLE.USER;
-
     // create user 
     const newUser = await User.create(payload);
     return newUser
@@ -23,27 +20,28 @@ const registerInToDB = async (payload: TUser) => {
 };
 const loginFromDB = async (payload: TLoginUser)=>{
     const user = await User.findOne({email: payload.email});
-    if(!user){
-        throw new Error("user not found")
-    }
-    const passwordMatch = await isPasswordMatched(
-        payload.password,
-        user.password
-    )
-    if(!passwordMatch){
-        throw new Error("password not matched");
-    }
-    const jwtPayload = {
-        email: user.email,
-        role: user.role,
-    }
-    const accessToken = jwt.sign(jwtPayload,config.jwt_access_secret as string, {
-        expiresIn: config.jwt_access_expire_in
-    })
+    // if(!user){
+    //     throw new Error("user not found")
+    // }
+    // const passwordMatch = await isPasswordMatched(
+    //     payload.password,
+    //     user.password
+    // )
+    // if(!passwordMatch){
+    //     throw new Error("password not matched");
+    // }
+    // const jwtPayload = {
+    //     email: user.email,
+    //     role: user.role,
+    // }
+    // const accessToken = jwt.sign(jwtPayload,config.jwt_access_secret as string, {
+    //     expiresIn: config.jwt_access_expire_in
+    // })
 
-    return{
-        accessToken
-    }
+    // return res.status(200).json({
+
+    // })
+    return user
 }
 
 export const authService = {

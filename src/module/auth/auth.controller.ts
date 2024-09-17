@@ -2,13 +2,14 @@ import { Request, Response } from "express";
 import { authService } from "./auth.service";
 import { createToken } from "./auth.createToken";
 import config from "../../config";
-
+import jwt from "jsonwebtoken"
+import { isPasswordMatched } from "./auth.utils";
 const register = async (req: Request, res: Response) => {
     try {
         const data = req.body
         const result = await authService.registerInToDB(data)
         const tokenData = {
-            _id: result._id,
+            // _id: result._id,
             email: data.email,
             role: data.role
         }
@@ -24,15 +25,59 @@ const register = async (req: Request, res: Response) => {
         console.log(error);
     }
 }
+
+
 const login = async (req: Request, res: Response) => {
   try {
-    const { accessToken } = await authService.loginFromDB(req.body);
+    const userData = req.body;
+    const user = await authService.loginFromDB(userData);
+    // const tokenData = {
+    //     email: user.email,
+    //     role: user.role
+    // }
+    // const user = await User.findOne({email: payload.email});
+    console.log(user);
+    
+    if(!user){
+        throw new Error("user not found")
+    }
+    // const passwordMatch = await isPasswordMatched(
+    //     userData.password,
+    //     user.password
+    // )
+    // if(!passwordMatch){
+    //     throw new Error("password not matched");
+    // }
+    const jwtPayload = {
+        email: user.email,
+        role: user.role,
+
+    }
+    const token = createToken(jwtPayload, config.jwt_access_secret as string,config.jwt_access_expire_in as string)
+
+    // const accessToken = jwt.sign(jwtPayload,config.jwt_access_secret as string, {
+    //     expiresIn: config.jwt_access_expire_in
+    // })
+    const userLoginData = {
+        _id: user._id.toString(),
+        name: user.name,
+        email: user.password,
+        role: user.role,
+        phone: user.phone,
+        address: user.address
+    }
+  
+    res.cookie('token', token, {
+        httpOnly: true
+    })
     res.status(200).json({
         success: true,
-        message: "user login successfully",
-        data: {
-            accessToken
-        }
+        statusCode: 200,
+        message: "User logged in successfully",
+        token: token,
+        data: userLoginData,
+   
+
     })
   } catch (error) {
     
