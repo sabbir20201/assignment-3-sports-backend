@@ -5,6 +5,7 @@ import config from './config'
 import { AuthRoutes } from './module/auth/auth.routes'
 import { BookingRoutes } from './module/booking/booking.routes'
 import { notFoundHandler } from './middleware/notFound'
+import globalErrorHandler from './middleware/globalErrorHandling'
 const app = express()
 
 
@@ -14,6 +15,7 @@ app.use("/api/facility", facilityRoutes)
 app.use("/api/auth", AuthRoutes)
 app.use("/api/bookings", BookingRoutes)
 app.use(notFoundHandler)
+app.use(globalErrorHandler)
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello Word one')

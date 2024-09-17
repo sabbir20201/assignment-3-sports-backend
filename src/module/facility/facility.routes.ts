@@ -6,8 +6,8 @@ import { verifyToken } from '../../middleware/varifyToken'
 import { verifyAdmin } from '../../middleware/verifyAdmin'
 
 const router = express.Router()
-
-router.post('/',validateRequest(facilityZodSchemaFile.facilityZodSchema),facilityController.createFacility)
+//
+router.post('/', validateRequest(facilityZodSchemaFile.facilityZodSchema),facilityController.createFacility)
 router.get('/' ,facilityController.getAllFacilities)
 router.put('/:id',verifyToken, verifyAdmin, facilityController.updateAFacility)
 router.delete('/:id', verifyToken, verifyAdmin,facilityController.deleteAFacility)

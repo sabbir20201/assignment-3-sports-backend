@@ -5,21 +5,22 @@ import { Facility } from "../facility/facility.model";
 import { User } from "../user/user.model";
 import { TBooking } from "./booking.interface";
 import { Booking } from "./booking.model";
+import { catchAsync } from "../../utils/catchAsync";
 
-const bookingAFacility = async(req: Request, res: Response)=>{
-try {
-    const {facility, date, startTime, endTime} = req.body;
+const bookingAFacility = catchAsync(async (req: Request, res: Response) => {
+
+    const { facility, date, startTime, endTime } = req.body;
     // const validateData = createBookingSchema.parse(bookingData)
     const userEmail = (req as any).user?.email;
-    const userField = await User.findOne({email: userEmail})
-    if(!userField){
+    const userField = await User.findOne({ email: userEmail })
+    if (!userField) {
         console.log("User not found");
-        
+
     }
     const user = (userField as any)._id.toString()
 
-    const isFacilityExists = await Facility.findOne({_id: facility});
-    if(!isFacilityExists){
+    const isFacilityExists = await Facility.findOne({ _id: facility });
+    if (!isFacilityExists) {
         return res.status(404).json({
             success: false,
             message: 'Facility not found'
@@ -34,22 +35,20 @@ try {
         endTime,
         user,
         payableAmount: 90,
-        isBooked:"confirmed", 
+        isBooked: "confirmed",
     }
-    
+
     const result = await bookingService.bookingInToDB(data);
     res.status(200).json({
         success: true,
         message: "booking created successfully",
         data: result
     })
-} catch (error) {
-    console.log(error);
-    
-}
-}
-const getAllBookings = async(req: Request, res: Response)=>{
-try {
+
+})
+
+const getAllBookings = catchAsync(async (req: Request, res: Response) => {
+
     const AllBookings = await Booking.find()
         .populate({
             path: 'facility',
@@ -60,28 +59,21 @@ try {
             select: "name email phone role address"
         })
         .exec();
-        res.status(200).json({
-            success: true,
-            message: "all bookings got successfully",
-            data: AllBookings
-        })
-} catch (error) {
-    console.log(error);
-    
     res.status(200).json({
-        success: false,
-        message: "no booking found",
-       
+        success: true,
+        message: "all bookings got successfully",
+        data: AllBookings
     })
-}
-}
+
+})
+
 // const getBookingByUser = async(req: Request, res: Response)=>{
 // try {
 //     const userEmail = (req as any).user?.email;
 //     // const userField = await User.findOne({email: userEmail})
 //     // if(!userField){
 //     //     console.log("User not found");
-        
+
 //     // }
 //     // const user = (userField as any)._id.toString()
 //     const findAUserBookings = await Booking.findOne({email:userEmail})
@@ -101,11 +93,11 @@ try {
 //         })
 // } catch (error) {
 //     console.log(error);
-    
+
 //     res.status(200).json({
 //         success: false,
 //         message: "no booking found",
-       
+
 //     })
 // }
 // }
