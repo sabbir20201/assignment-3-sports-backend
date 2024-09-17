@@ -31,37 +31,28 @@ const login = async (req: Request, res: Response) => {
   try {
     const userData = req.body;
     const user = await authService.loginFromDB(userData);
-    // const tokenData = {
-    //     email: user.email,
-    //     role: user.role
-    // }
-    // const user = await User.findOne({email: payload.email});
-    console.log(user);
     
     if(!user){
         throw new Error("user not found")
     }
-    // const passwordMatch = await isPasswordMatched(
-    //     userData.password,
-    //     user.password
-    // )
-    // if(!passwordMatch){
-    //     throw new Error("password not matched");
-    // }
+    const passwordMatch = await isPasswordMatched(
+        userData.password,
+        user.password
+    )
+    if(!passwordMatch){
+        throw new Error("password not matched");
+    }
     const jwtPayload = {
         email: user.email,
         role: user.role,
-
     }
-    const token = createToken(jwtPayload, config.jwt_access_secret as string,config.jwt_access_expire_in as string)
 
-    // const accessToken = jwt.sign(jwtPayload,config.jwt_access_secret as string, {
-    //     expiresIn: config.jwt_access_expire_in
-    // })
+    const token = createToken(jwtPayload, config.jwt_access_secret as string,config.jwt_access_expire_in as string)
+   
     const userLoginData = {
         _id: user._id.toString(),
         name: user.name,
-        email: user.password,
+        email: user.email,
         role: user.role,
         phone: user.phone,
         address: user.address
@@ -80,7 +71,10 @@ const login = async (req: Request, res: Response) => {
 
     })
   } catch (error) {
-    
+    res.json({
+        success: false,
+        error: (error as any).message
+    })    
   }
 }
 
