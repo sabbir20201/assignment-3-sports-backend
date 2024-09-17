@@ -190,5 +190,5 @@ try {
 export const BookingControllers = {
     bookingAFacility,
     getAllBookings,
-    getBookingByUser
+    // getBookingByUser
 }

@@ -8,6 +8,6 @@ const router = express.Router()
 
 router.post("/", verifyToken,BookingControllers.bookingAFacility)
 router.get("/", verifyToken, verifyAdmin,BookingControllers.getAllBookings)
-router.get("/user", verifyToken, verifyUser,BookingControllers.getBookingByUser)
+// router.get("/user", verifyToken, verifyUser,BookingControllers.getBookingByUser)
 
 export const BookingRoutes = router

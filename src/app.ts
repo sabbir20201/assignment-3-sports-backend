@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import config from './config'
 import { AuthRoutes } from './module/auth/auth.routes'
 import { BookingRoutes } from './module/booking/booking.routes'
+import { notFoundHandler } from './middleware/notFound'
 const app = express()
 
 
@@ -12,6 +13,7 @@ app.use(express.json())
 app.use("/api/facility", facilityRoutes)
 app.use("/api/auth", AuthRoutes)
 app.use("/api/bookings", BookingRoutes)
+app.use(notFoundHandler)
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello Word one')
