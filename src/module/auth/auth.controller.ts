@@ -48,7 +48,8 @@ const login = async (req: Request, res: Response) => {
     }
 
     const token = createToken(jwtPayload, config.jwt_access_secret as string,config.jwt_access_expire_in as string)
-   
+    
+    
     const userLoginData = {
         _id: user._id.toString(),
         name: user.name,
@@ -73,6 +74,7 @@ const login = async (req: Request, res: Response) => {
   } catch (error) {
     res.json({
         success: false,
+        statusCode: 500,
         error: (error as any).message
     })    
   }

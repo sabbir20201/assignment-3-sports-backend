@@ -3,8 +3,8 @@ import { facilityServices } from "./facility.service";
 import { catchAsync } from "../../utils/catchAsync";
 
 
-const createFacility = catchAsync(async(req: Request, res: Response)=>{
-
+const createFacility = async(req: Request, res: Response)=>{
+    try {
         const facilityData = req.body;
         const result = await facilityServices.createFacilityIntoDB(facilityData)  
         res.status(200).json({
@@ -12,8 +12,20 @@ const createFacility = catchAsync(async(req: Request, res: Response)=>{
             message: 'facility is created successfully',
             data: result
         })
+    } catch (error) {
+        
+        res.status(200).json({
+            success:true,
+            statusCode: 500,
+            error: (error as any).message
 
-} ) 
+          
+        })
+    }
+
+   
+
+} 
 
 const getAllFacilities = async(req: Request, res: Response)=>{
 
@@ -22,13 +34,13 @@ const getAllFacilities = async(req: Request, res: Response)=>{
         res.status(200).json({
             success:true,
             statusCode: 200,
-            message: 'all facilities retrieved successfully',
+            message: 'Facilities retrieved successfully',
             data: result
         })
     } catch (error) {
         res.status(500).json({
             success:false,
-            message: 'facility is not getting successfully',
+            statusCode: 500,
             error,
         })
     }
@@ -37,20 +49,18 @@ const updateAFacility = async(req: Request, res: Response)=>{
 
     try {
         const facilityId = req.params.id;
-        console.log(facilityId, "facilityId");
-        
         const updateData = req.body;
         const result = await facilityServices.findAndUpdateFacilityIntoDB(facilityId, updateData)  
         res.status(200).json({
             success:true,
             statusCode: 200,
-            message: 'all facilities retrieved successfully',
+            message: 'facility updated successfully',
             data: result
         })
     } catch (error) {
         res.status(500).json({
             success:false,
-            message: 'facility is not getting successfully',
+            statusCode: 500,
             error,
         })
     }
@@ -64,14 +74,15 @@ const deleteAFacility = async(req: Request, res: Response)=>{
         res.status(200).json({
             success:true,
             statusCode: 200,
-            message: 'all deleted retrieved successfully',
+            message: 'Facility deleted successfully',
             data: result
         })
     } catch (error) {
         res.status(500).json({
             success:false,
-            message: 'facility is not delete successfully',
+            statusCode: 500,
             error,
+   
         })
     }
 } 

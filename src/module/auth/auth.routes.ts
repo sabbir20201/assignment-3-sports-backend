@@ -1,8 +1,5 @@
 import express from "express"
 import { authController } from "./auth.controller";
-import { verifyToken } from "../../middleware/varifyToken";
-import { userValidationByZod } from "../user/user.validation";
-
 
 const router = express.Router();
 

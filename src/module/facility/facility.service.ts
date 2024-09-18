@@ -5,11 +5,7 @@ import { User } from "../user/user.model";
 
 
 const createFacilityIntoDB = async(payload: TFacility)=>{
-    // const role = await User.findOne({role: role})
-    // console.log(role, 'roleee');
-    
     const facility = new Facility(payload)
- 
     const result = facility.save()
     return result
 }
