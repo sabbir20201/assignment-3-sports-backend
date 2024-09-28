@@ -1,13 +1,13 @@
 import express, { Router } from "express"
 import { BookingControllers } from "./booking.controller"
-import { verifyToken } from "../../middleware/varifyToken"
-import { verifyAdmin } from "../../middleware/verifyAdmin"
-import { verifyUser } from "../../middleware/verifyUser"
+import { auth } from "../../middleware/auth"
+
 
 const router = express.Router()
 
-router.post("/", verifyToken,BookingControllers.bookingAFacility)
-router.get("/", verifyToken, verifyAdmin,BookingControllers.getAllBookings)
-// router.get("/user", verifyToken, verifyUser,BookingControllers.getBookingByUser)
+router.post("/", auth(["user"]),BookingControllers.bookingAFacility)
+router.get("/", auth(["admin"]),BookingControllers.getAllBookings)
+router.get("/user", auth(["user"]),BookingControllers.getBookingByUser)
+router.delete("/user", auth(["user"]),BookingControllers.cancelABooking)
 
 export const BookingRoutes = router

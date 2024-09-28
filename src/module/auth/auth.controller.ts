@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { authService } from "./auth.service";
 import { createToken } from "./auth.createToken";
 import config from "../../config";
-import jwt from "jsonwebtoken"
 import { isPasswordMatched } from "./auth.utils";
 const register = async (req: Request, res: Response) => {
     try {

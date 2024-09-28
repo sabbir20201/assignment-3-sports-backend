@@ -1,9 +1,9 @@
-import { Request, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import { facilityServices } from "./facility.service";
 import { catchAsync } from "../../utils/catchAsync";
 
 
-const createFacility = async(req: Request, res: Response)=>{
+const createFacility = async(req: Request, res: Response, next: NextFunction)=>{
     try {
         const facilityData = req.body;
         const result = await facilityServices.createFacilityIntoDB(facilityData)  
@@ -13,18 +13,13 @@ const createFacility = async(req: Request, res: Response)=>{
             data: result
         })
     } catch (error) {
-        
-        res.status(200).json({
-            success:true,
-            statusCode: 500,
-            error: (error as any).message
-
-          
-        })
+        next()
+        // res.status(200).json({
+        //     success:true,
+        //     statusCode: 500,
+        //     error: (error as any).message     
+        // })
     }
-
-   
-
 } 
 
 const getAllFacilities = async(req: Request, res: Response)=>{

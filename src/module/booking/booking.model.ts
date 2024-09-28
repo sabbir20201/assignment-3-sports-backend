@@ -30,10 +30,9 @@ import { TBooking } from "./booking.interface";
     },
     isBooked: {
         type: String,
-        enum: ['pending', 'confirmed', 'cancel'],
-        default: 'pending'
+        enum: ['confirmed', 'canceled'],
     }
-}, {timestamps: true}) 
+}) 
 
 
 export const Booking = model<TBooking>('Booking', bookingSchema)

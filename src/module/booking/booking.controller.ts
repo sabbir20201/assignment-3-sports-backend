@@ -14,7 +14,7 @@ const bookingAFacility = catchAsync(async (req: Request, res: Response) => {
     const userEmail = (req as any).user?.email;
     const userField = await User.findOne({ email: userEmail })
     if (!userField) {
-        console.log("User not found");
+        throw new Error("user not found")
 
     }
     const user = (userField as any)._id.toString()
@@ -26,7 +26,22 @@ const bookingAFacility = catchAsync(async (req: Request, res: Response) => {
             message: 'Facility not found'
         });
     }
-    const facilityId = (isFacilityExists as any)._id.toString()
+ 
+    const facilityId = (isFacilityExists as any)._id.toString();
+    const existingBookings = await Booking.find({
+        facility: facilityId,
+        date: date,
+        $or : [
+            {startTime: {$lt: endTime}, endTime: {$gt: startTime}}
+        ]
+    })
+
+    if(existingBookings.length > 0){
+        return res.status(400).json({
+            success: false,
+            message: 'selected slot of time is not available for this facility item'
+        });
+    }
 
     const data: TBooking = {
         facility: facilityId,
@@ -41,6 +56,7 @@ const bookingAFacility = catchAsync(async (req: Request, res: Response) => {
     const result = await bookingService.bookingInToDB(data);
     res.status(200).json({
         success: true,
+        statusCode: 200,
         message: "booking created successfully",
         data: result
     })
@@ -49,7 +65,7 @@ const bookingAFacility = catchAsync(async (req: Request, res: Response) => {
 
 const getAllBookings = catchAsync(async (req: Request, res: Response) => {
 
-    const AllBookings = await Booking.find()
+    const AllBookings = await Booking.find({isBooked: "confirmed"})
         .populate({
             path: 'facility',
             select: "name description pricePerHour location isDeleted"
@@ -61,126 +77,95 @@ const getAllBookings = catchAsync(async (req: Request, res: Response) => {
         .exec();
     res.status(200).json({
         success: true,
-        message: "all bookings got successfully",
+        message: "Bookings retrieved successfully",
         data: AllBookings
     })
 
 })
 
-// const getBookingByUser = async(req: Request, res: Response)=>{
-// try {
-//     const userEmail = (req as any).user?.email;
-//     // const userField = await User.findOne({email: userEmail})
-//     // if(!userField){
-//     //     console.log("User not found");
+const getBookingByUser = async (req: Request, res: Response) => {
+    try {
+        const userEmail = (req as any).user?.email;
+        const userField = await User.findOne({ email: userEmail })
+        if (!userField) {
+            return res.status(500).json({
+                success: false,
+                message: "user not found"
+            })
 
-//     // }
-//     // const user = (userField as any)._id.toString()
-//     const findAUserBookings = await Booking.findOne({email:userEmail})
-//         .populate({
-//             path: 'facility',
-//             select: "name description pricePerHour location isDeleted"
-//         })
-//         // .populate({
-//         //     path: "user",
-//         //     select: "name email phone role address"
-//         // })
-//         .exec();
-//         res.status(200).json({
-//             success: true,
-//             message: "all bookings got successfully",
-//             data: findAUserBookings
-//         })
-// } catch (error) {
-//     console.log(error);
+        }
 
-//     res.status(200).json({
-//         success: false,
-//         message: "no booking found",
+        const findAUserBookings = await Booking.findOne({ user: userField._id })
+            .populate({
+                path: 'facility',
+                select: "name description pricePerHour location isDeleted"
+            })
+            .exec();
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Bookings retrieved successfully",
+            data: findAUserBookings
+        })
+    } catch (error) {
+        console.log(error);
 
-//     })
-// }
-// }
+        res.status(200).json({
+            success: false,
+            message: "no booking found",
 
-// const getAllBookings = async (req: Request, res: Response) => {
-//     try {
-//         const bookings = await Booking.find()
-//             .populate({
-//                 path: 'facility',
-//                 select: 'name description pricePerHour location isDeleted' // Specify fields to include
-//             })
-//             .populate({
-//                 path: 'user',
-//                 select: 'name email phone role address' // Specify fields to include
-//             })
-//             .exec();
-
-//         res.status(200).json({
-//             success: true,
-//             statusCode: 200,
-//             message: 'Bookings retrieved successfully',
-//             data: bookings
-//         });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({
-//             success: false,
-//             message: 'An error occurred while retrieving bookings'
-//         });
-//     }
-// };
-// const getBookingByUser = async (req: Request, res: Response) => {
-//     try {
-//         const userEmail = (req as any).user?.email;
-
-//         // Find the user by email
-//         const userField = await User.findOne({ email: userEmail });
-//         if (!userField) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "User not found",
-//             });
-//         }
-
-//         // Find bookings for the user using their _id
-//         const findAUserBookings = await Booking.find({ user: userField._id })
-//             .populate({
-//                 path: 'facility',
-//                 select: 'name description pricePerHour location isDeleted',
-//             })
-//             // .populate({
-//             //     path: 'user',
-//             //     select: 'name email phone role address',
-//             // })
-//             .exec();
-
-//         // Check if there are any bookings
-//         if (!findAUserBookings || findAUserBookings.length === 0) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: 'No bookings found for this user',
-//             });
-//         }
-
-//         // Send success response with bookings
-//         res.status(200).json({
-//             success: true,
-//             message: "Bookings retrieved successfully",
-//             data: findAUserBookings,
-//         });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({
-//             success: false,
-//             message: "An error occurred while retrieving bookings",
-//         });
-//     }
-// };
+        })
+    }
+}
 
 
+const cancelABooking = async (req: Request, res: Response) => {
+    try {
+        const userEmail = (req as any).user?.email;
+        const userField = await User.findOne({ email: userEmail })
+        if (!userField) {
+            return res.status(500).json({
+                success: false,
+                message: "user not found"
+            })
 
+        }
+
+        const booking = await Booking.findOne({ user: userField._id })
+            .populate({
+                path: 'facility',
+                select: "name description pricePerHour location isDeleted"
+            })
+            .exec();
+            if(!booking){
+                return res.status(404).json({
+                    success: false,
+                    statusCode: 404,
+                    message: "Booking not found"
+                })
+            }
+        booking.isBooked = "canceled"
+
+        await booking?.save()
+        res.status(200).json({
+            success: true,
+            statusCode: 200,
+            message: "Bookings canceled successfully",
+            data: booking
+        })
+    } catch (error) {
+        console.log(error);
+
+        res.status(200).json({
+            success: false,
+            message: "no booking found",
+
+        })
+    }
+}
 export const BookingControllers = {
     bookingAFacility,
     getAllBookings,
-    // getBookingByUser
+    getBookingByUser,
+    cancelABooking
 }

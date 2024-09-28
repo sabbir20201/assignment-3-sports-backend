@@ -1,6 +1,5 @@
 import { Types } from "mongoose";
-import { TFacility } from "../facility/facility.interface";
-import { TUser } from "../user/user.interface";
+
 
 export type TBooking = {
     facility: Types.ObjectId;
@@ -9,15 +8,6 @@ export type TBooking = {
     endTime: string;
     user: Types.ObjectId;
     payableAmount: number;
-    isBooked: 'confirmed'| 'cancel';
+    isBooked: 'confirmed'| 'canceled';
 }
 
-// export interface IBooking extends Document {
-//     facility: TFacility['_id'];
-//     date: string;
-//     startTime: string;
-//     endTime: string;
-//     user: TUser['_id'];
-//     payableAmount: number;
-//     isBooked: 'confirmed' | 'cancel' | 'pending' | 'rescheduled';
-// }

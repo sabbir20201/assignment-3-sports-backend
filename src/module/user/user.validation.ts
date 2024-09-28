@@ -14,6 +14,6 @@ export const userValidationByZod = z.object({
     })
 })
 
-// export const userValidationByZodExport = {
-//     userValidationByZod
-// }
+export const userValidationByZodExport = {
+    userValidationByZod
+}

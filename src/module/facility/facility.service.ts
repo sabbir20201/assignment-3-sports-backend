@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Facility } from "./facility.model";
 import { TFacility } from "./facility.interface";
-import { User } from "../user/user.model";
+
 
 
 const createFacilityIntoDB = async(payload: TFacility)=>{

@@ -1,0 +1,10 @@
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6IndlYkBwcm9ncmFtbWluZy1oZXJvYWRtaW4uY29tIiwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzI3NDk4NDgzLCJleHAiOjE3Mjc1MzQ0ODN9.LeOYZ7OIFzxpIy7ae2G6IkPn5ZWOT98erjyBbtWEiMs
+admin
+{
+  "name": "Programming Hero",
+  "email": "web@programming-heroadmin.com",
+  "password": "programming-hero1admin",
+  "phone": "01322901105",
+  "role": "admin", // or 'user'
+  "address": "Level-4, 34, Awal Centre, Banani, Dhaka"
+}
