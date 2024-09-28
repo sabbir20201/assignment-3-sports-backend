@@ -9,6 +9,7 @@ const createFacility = async(req: Request, res: Response, next: NextFunction)=>{
         const result = await facilityServices.createFacilityIntoDB(facilityData)  
         res.status(200).json({
             success:true,
+            statusCode: 200,
             message: 'facility is created successfully',
             data: result
         })

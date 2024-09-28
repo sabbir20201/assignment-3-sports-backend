@@ -28,24 +28,3 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
 }
 
 
-
-
-
-// Middleware to verify JWT token
-// export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-//     const authHeader = req.headers.authorization;
-//     console.log('Authorization Header:', authHeader);  // Log to debug
-
-//     if (!authHeader || !authHeader.startsWith("Bearer ")) {
-//         return res.status(401).json({ success: false, message: "Token not found, authorization denied" });
-//     }
-
-//     const token = authHeader.split(" ")[1];
-//     try {
-//         const decoded = jwt.verify(token, config.jwt_access_secret as string);
-//         (req as any).user = decoded;  // attach user info to the request object
-//         next();
-//     } catch (error) {
-//         return res.status(401).json({ success: false, message: "Invalid Token" });
-//     }
-// };

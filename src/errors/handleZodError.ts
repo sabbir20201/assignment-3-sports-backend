@@ -3,7 +3,7 @@ import { ZodError } from "zod"
 const handleZodError = (err: ZodError)=>{
     const handleError = err.issues.map(error => {
         return {
-          path: error.path[error.path.length -1],
+          path: String(error.path[error.path.length -1]),
           message: error.message
         }
       })

@@ -61,13 +61,18 @@ const checkAvailabilityTimeSlots = async (req: Request, res: Response) => {
         res.status(200).json({
             success: true,
             statusCode: 200,
-            message: `${date.isSame(moment(), 'day') ? 'todays slot' : ''} check availability date successfully`,
+            message: 'Availability checked successfully',
             date: availableTimeSlots
         })
 
     } catch (error) {
-        console.log(error);
+        res.status(500).json({
+            success: false,
+            statusCode: 200,
+            message: 'Availability checked successfully',
+            errorSource: error
 
+        })
     }
 
 

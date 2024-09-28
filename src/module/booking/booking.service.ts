@@ -4,7 +4,7 @@ import { Booking } from "./booking.model"
 
 const bookingInToDB = async (payload: TBooking) => {
     try {
-        
+
         const result = await Booking.create(payload)
         return result
     } catch (error) {
@@ -12,8 +12,6 @@ const bookingInToDB = async (payload: TBooking) => {
 
     }
 }
-
-
 
 export const bookingService = {
     bookingInToDB

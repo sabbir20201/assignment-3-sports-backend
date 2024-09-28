@@ -8,7 +8,6 @@ const register = async (req: Request, res: Response) => {
         const data = req.body
         const result = await authService.registerInToDB(data)
         const tokenData = {
-            // _id: result._id,
             email: data.email,
             role: data.role
         }
@@ -16,9 +15,9 @@ const register = async (req: Request, res: Response) => {
 
         res.status(200).json({
             success: true,
-            message: "user register successfully",
+            statusCode: 200,
+            message: "User registered successfully",
             data: result,
-            tokenData: token 
         })
     } catch (error) {
         console.log(error);

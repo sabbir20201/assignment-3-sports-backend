@@ -9,3 +9,6 @@ export const createBookingSchema = z.object({
   endTime: z.string().regex(/^\d{2}:\d{2}$/, 'End time must be in HH:mm format'),
   payableAmount: z.number().min(0, 'Payable amount must be greater than or equal to 0'),
 });
+export const  createBookingSchemaFile = {
+  createBookingSchema
+}

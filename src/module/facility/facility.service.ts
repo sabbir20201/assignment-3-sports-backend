@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { Facility } from "./facility.model";
 import { TFacility } from "./facility.interface";
 

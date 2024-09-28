@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { bookingService } from "./booking.service";
-import { createBookingSchema } from "./booking.zod";
 import { Facility } from "../facility/facility.model";
 import { User } from "../user/user.model";
 import { TBooking } from "./booking.interface";
@@ -18,30 +17,40 @@ const bookingAFacility = catchAsync(async (req: Request, res: Response) => {
 
     }
     const user = (userField as any)._id.toString()
-
     const isFacilityExists = await Facility.findOne({ _id: facility });
+    
+
+
     if (!isFacilityExists) {
         return res.status(404).json({
             success: false,
             message: 'Facility not found'
         });
     }
- 
+
     const facilityId = (isFacilityExists as any)._id.toString();
+    const pricePerHour = isFacilityExists.pricePerHour;
+
     const existingBookings = await Booking.find({
         facility: facilityId,
         date: date,
-        $or : [
-            {startTime: {$lt: endTime}, endTime: {$gt: startTime}}
+        $or: [
+            { startTime: { $lt: endTime }, endTime: { $gt: startTime } }
         ]
     })
 
-    if(existingBookings.length > 0){
+    if (existingBookings.length > 0) {
         return res.status(400).json({
             success: false,
             message: 'selected slot of time is not available for this facility item'
         });
     }
+    // calculation if payable amount 
+    const start = new Date(`${date}T${startTime}`);
+    const end = new Date(`${date}T${endTime}`);
+    const durationHours = (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+    const payableAmount = durationHours * pricePerHour
+
 
     const data: TBooking = {
         facility: facilityId,
@@ -49,7 +58,7 @@ const bookingAFacility = catchAsync(async (req: Request, res: Response) => {
         startTime,
         endTime,
         user,
-        payableAmount: 90,
+        payableAmount,
         isBooked: "confirmed",
     }
 
@@ -65,7 +74,7 @@ const bookingAFacility = catchAsync(async (req: Request, res: Response) => {
 
 const getAllBookings = catchAsync(async (req: Request, res: Response) => {
 
-    const AllBookings = await Booking.find({isBooked: "confirmed"})
+    const AllBookings = await Booking.find({ isBooked: "confirmed" })
         .populate({
             path: 'facility',
             select: "name description pricePerHour location isDeleted"
@@ -77,6 +86,7 @@ const getAllBookings = catchAsync(async (req: Request, res: Response) => {
         .exec();
     res.status(200).json({
         success: true,
+        statusCode: 200,
         message: "Bookings retrieved successfully",
         data: AllBookings
     })
@@ -92,7 +102,6 @@ const getBookingByUser = async (req: Request, res: Response) => {
                 success: false,
                 message: "user not found"
             })
-
         }
 
         const findAUserBookings = await Booking.findOne({ user: userField._id })
@@ -108,12 +117,10 @@ const getBookingByUser = async (req: Request, res: Response) => {
             data: findAUserBookings
         })
     } catch (error) {
-        console.log(error);
-
-        res.status(200).json({
+        res.status(500).json({
             success: false,
+            statusCode: 500,
             message: "no booking found",
-
         })
     }
 }
@@ -128,7 +135,6 @@ const cancelABooking = async (req: Request, res: Response) => {
                 success: false,
                 message: "user not found"
             })
-
         }
 
         const booking = await Booking.findOne({ user: userField._id })
@@ -137,16 +143,16 @@ const cancelABooking = async (req: Request, res: Response) => {
                 select: "name description pricePerHour location isDeleted"
             })
             .exec();
-            if(!booking){
-                return res.status(404).json({
-                    success: false,
-                    statusCode: 404,
-                    message: "Booking not found"
-                })
-            }
+        if (!booking) {
+            return res.status(404).json({
+                success: false,
+                statusCode: 404,
+                message: "Booking not found"
+            })
+        }
         booking.isBooked = "canceled"
-
         await booking?.save()
+
         res.status(200).json({
             success: true,
             statusCode: 200,
@@ -154,12 +160,10 @@ const cancelABooking = async (req: Request, res: Response) => {
             data: booking
         })
     } catch (error) {
-        console.log(error);
-
-        res.status(200).json({
+        res.status(500).json({
             success: false,
+            statusCode: 200,
             message: "no booking found",
-
         })
     }
 }

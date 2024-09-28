@@ -8,6 +8,6 @@ const router = express.Router()
 router.post("/", auth(["user"]),BookingControllers.bookingAFacility)
 router.get("/", auth(["admin"]),BookingControllers.getAllBookings)
 router.get("/user", auth(["user"]),BookingControllers.getBookingByUser)
-router.delete("/user", auth(["user"]),BookingControllers.cancelABooking)
+router.delete("/:id", auth(["user"]),BookingControllers.cancelABooking)
 
 export const BookingRoutes = router
