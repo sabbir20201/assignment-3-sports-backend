@@ -17,15 +17,23 @@ const createFacilityIntoDB = (payload) => __awaiter(void 0, void 0, void 0, func
     return result;
 });
 const getAllFacilitiesFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield facility_model_1.Facility.find();
+    const result = yield facility_model_1.Facility.find({ isDeleted: false });
     return result;
 });
-const updateFacilityIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const updateFacility = yield facility_model_1.Facility.findByIdAndUpdate(id, payload);
+const findAndUpdateFacilityIntoDB = (id, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const updateFacility = yield facility_model_1.Facility.findByIdAndUpdate(id, payload, {
+        new: true,
+        runValidators: true
+    });
     return updateFacility;
+});
+const deleteAFacilityIntoDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const deleteFacility = yield facility_model_1.Facility.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
+    return deleteFacility;
 });
 exports.facilityServices = {
     createFacilityIntoDB,
     getAllFacilitiesFromDB,
-    updateFacilityIntoDB
+    findAndUpdateFacilityIntoDB,
+    deleteAFacilityIntoDB
 };
