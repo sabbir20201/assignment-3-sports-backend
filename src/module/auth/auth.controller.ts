@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { authService } from "./auth.service";
 import { createToken } from "./auth.createToken";
 import config from "../../config";
 import { isPasswordMatched } from "./auth.utils";
-const register = async (req: Request, res: Response) => {
+const register = async (req: Request, res: Response,next: NextFunction) => {
     try {
         const data = req.body
         const result = await authService.registerInToDB(data)
@@ -19,8 +19,15 @@ const register = async (req: Request, res: Response) => {
             message: "User registered successfully",
             data: result,
         })
-    } catch (error) {
-        console.log(error);
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            statusCode: 500,
+            message: 'use another email',
+            error: `${error?.errorResponse?.keyValue.email} is already exist`
+          
+        })
+     
     }
 }
 

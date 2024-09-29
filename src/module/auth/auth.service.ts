@@ -6,7 +6,9 @@ const registerInToDB = async (payload: TUser) => {
     // user existence check 
     const user = await User.findOne({ email: payload.email });
     if (user) {
-        throw new Error("user already exists");
+        // throw new Error("user already exists");
+        console.log("user already exists");
+        
     }
     // create user 
     const newUser = await User.create(payload);
